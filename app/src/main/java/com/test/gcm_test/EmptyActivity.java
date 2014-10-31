@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -31,8 +32,8 @@ public class EmptyActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState)
     {
         try {
-            SENDER_ID = getApplicationContext().getPackageManager().getApplicationInfo(
-                    getApplicationContext().getPackageName(), PackageManager.GET_META_DATA).metaData.getString("PROJECT_NUMBER");
+            SENDER_ID = ""+getApplicationContext().getPackageManager().getApplicationInfo(
+                    getApplicationContext().getPackageName(), PackageManager.GET_META_DATA).metaData.getInt("PROJECT_NUMBER");
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -106,6 +107,7 @@ public class EmptyActivity extends Activity {
 
     private void registerInBackground()
     {
+        final TextView text = (TextView)findViewById(R.id.text);
         new AsyncTask<Void, Void, String>()
         {
             @Override
@@ -120,8 +122,12 @@ public class EmptyActivity extends Activity {
                     }
                     _regId = _gcm.register(SENDER_ID);
 
-                    TextView text = (TextView)findViewById(R.id.text);
-                    text.setText("regId:" + _regId);
+                    text.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            text.setText("regId:" + _regId);
+                        }
+                    });
 
                     msg = "Device registered, registration ID=" + _regId;
                 }
