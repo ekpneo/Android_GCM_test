@@ -51,7 +51,7 @@ public class GCMIntentService extends IntentService {
                 // Post notification of received message.
 //            sendNotification("Received: " + extras.toString());
                 sendNotification("Received: " + msg);
-                Log.i("GcmIntentService.java | onHandleIntent", "Received: " + extras.toString());
+                Log.i("GCMIntentService.java | onHandleIntent", "Received: " + extras.toString());
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.

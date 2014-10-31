@@ -14,14 +14,14 @@ public class GCMBroadcastReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        Log.i("GcmBroadcastReceiver.java | onReceive", "|" + "=================" + "|");
+        Log.i("GCMBroadcastReceiver.java | onReceive", "|" + "=================" + "|");
         Bundle bundle = intent.getExtras();
         for (String key : bundle.keySet())
         {
             Object value = bundle.get(key);
-            Log.i("GcmBroadcastReceiver.java | onReceive", "|" + String.format("%s : %s (%s)", key, value.toString(), value.getClass().getName()) + "|");
+            Log.i("GCMBroadcastReceiver.java | onReceive", "|" + String.format("%s : %s (%s)", key, value.toString(), value.getClass().getName()) + "|");
         }
-        Log.i("GcmBroadcastReceiver.java | onReceive", "|" + "=================" + "|");
+        Log.i("GCMBroadcastReceiver.java | onReceive", "|" + "=================" + "|");
 
         // Explicitly specify that GcmIntentService will handle the intent.
         ComponentName comp = new ComponentName(context.getPackageName(), GCMIntentService.class.getName());
