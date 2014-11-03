@@ -2,6 +2,8 @@ package com.test.gcm_test;
 
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,15 +15,22 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 public class EmptyActivity extends Activity {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static String SENDER_ID = null;
+    private static String URL = null;
 
     private GoogleCloudMessaging _gcm;
     private String _regId;
@@ -31,8 +40,10 @@ public class EmptyActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState)
     {
         try {
-            SENDER_ID = ""+getApplicationContext().getPackageManager().getApplicationInfo(
-                    getApplicationContext().getPackageName(), PackageManager.GET_META_DATA).metaData.getInt("PROJECT_NUMBER");
+            SENDER_ID = getApplicationContext().getPackageManager().getApplicationInfo(
+                    getApplicationContext().getPackageName(), PackageManager.GET_META_DATA).metaData.getString("PROJECT_NUMBER");
+            URL = getApplicationContext().getPackageManager().getApplicationInfo(
+                    getApplicationContext().getPackageName(), PackageManager.GET_META_DATA).metaData.getString("URL");
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -119,16 +130,28 @@ public class EmptyActivity extends Activity {
                     {
                         _gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
                     }
+//                    _gcm.unregister();
                     _regId = _gcm.register(SENDER_ID);
+
+                    msg = "Device registered, Sender ID=" + SENDER_ID + ", registration ID=" + _regId;
 
                     text.post(new Runnable() {
                         @Override
                         public void run() {
-                            text.setText("regId:" + _regId);
+                            text.setText("senderId:" + SENDER_ID + ",regId:" + _regId);
                         }
                     });
 
-                    msg = "Device registered, registration ID=" + _regId;
+                    try {
+                        HttpClient hc = new DefaultHttpClient();
+                        HttpGet req = new HttpGet();
+                        URI website = new URI(URL + "?reg_id=" + _regId);
+                        req.setURI(website);
+                        hc.execute(req);
+                    } catch (URISyntaxException e) {
+                        msg += "(Error:Server URL is wrong)";
+                    }
+
                 }
                 catch (IOException ex)
                 {

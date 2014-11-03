@@ -35,8 +35,8 @@
         <!--
             Please configure the value below
         -->
-        <meta-data android:name="PROJECT_NUMBER" android:value="(PROJECT-NUMBER)"/>
-
+        <meta-data android:name="PROJECT_NUMBER" android:value="\ (PROJECT-NUMBER)"/>
+        <meta-data android:name="URL" android:value="(URL)" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
