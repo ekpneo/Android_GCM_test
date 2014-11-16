@@ -7,11 +7,13 @@ import java.net.URISyntaxException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
@@ -31,6 +33,8 @@ public class EmptyActivity extends Activity {
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static String SENDER_ID = null;
     private static String URL = null;
+
+	private static final String KEY_REG_ID = "regId";
 
     private GoogleCloudMessaging _gcm;
     private String _regId;
@@ -56,8 +60,6 @@ public class EmptyActivity extends Activity {
         {
             _gcm = GoogleCloudMessaging.getInstance(this);
             _regId = getRegistrationId();
-
-
 
             if (TextUtils.isEmpty(_regId))
                 registerInBackground();
@@ -96,9 +98,18 @@ public class EmptyActivity extends Activity {
         return true;
     }
 
+	private void saveRegistrationId(String regId) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editor = prefs.edit();
+
+		editor.putString(KEY_REG_ID, regId);
+		editor.apply();
+	}
+
     private String getRegistrationId()
     {
-        return _regId;
+	    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+	    return prefs.getString("KEY_REG_ID", "");
     }
 
     private int getAppVersion()
@@ -138,7 +149,7 @@ public class EmptyActivity extends Activity {
                     text.post(new Runnable() {
                         @Override
                         public void run() {
-                            text.setText("senderId:" + SENDER_ID + ",regId:" + _regId);
+                        text.setText("senderId:" + SENDER_ID + ",regId:" + _regId);
                         }
                     });
 
@@ -151,7 +162,6 @@ public class EmptyActivity extends Activity {
                     } catch (URISyntaxException e) {
                         msg += "(Error:Server URL is wrong)";
                     }
-
                 }
                 catch (IOException ex)
                 {
