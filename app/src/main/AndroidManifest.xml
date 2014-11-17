@@ -34,8 +34,8 @@
         <!--
             Please configure the value below
         -->
-        <meta-data android:name="PROJECT_NUMBER" android:value="\ 799960529554"/>
-        <meta-data android:name="URL" android:value="http://peirazo.net:5000/add_reg_id" />
+        <meta-data android:name="PROJECT_NUMBER" android:value="\ PROJECT_NUMBER"/>
+        <meta-data android:name="URL" android:value="URL" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

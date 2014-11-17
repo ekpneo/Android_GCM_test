@@ -13,6 +13,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GCMIntentService extends IntentService {
     public static final int NOTIFICATION_ID = 1;
+
     public GCMIntentService() {
         super("GCMIntentService");
     }
@@ -43,16 +44,22 @@ public class GCMIntentService extends IntentService {
             }
             else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType))
             {
-                Log.i("GCMIntentService.java | onHandleIntent", "Received: " + extras.toString());
-                String icon = intent.getStringExtra("icon");
+	            Log.i("GCMIntentService.java | onHandleIntent", "Received: " + extras.toString());
+	            String type = intent.getStringExtra("type");
+	            if (type != null && type.equals("cancel")) {
+		            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		            mNotificationManager.cancel(NOTIFICATION_ID);
+	            } else {
+		            String icon = intent.getStringExtra("icon");
 
-	            String title = "Message";
-	            if (intent.hasExtra("title")) {
-		            intent.getStringExtra("title");
+		            String title = "Message";
+		            if (intent.hasExtra("title")) {
+			            intent.getStringExtra("title");
+		            }
+
+		            String msg = intent.getStringExtra("msg");
+		            sendNotification(icon, title, msg);
 	            }
-
-                String msg = intent.getStringExtra("msg");
-                sendNotification(icon, title, msg);
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -65,7 +72,7 @@ public class GCMIntentService extends IntentService {
     // a GCM message.
     private void sendNotification(String icon, String title, String msg)
     {
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+	    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent intent = new Intent(getApplicationContext(), EmptyActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
